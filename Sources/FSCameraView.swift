@@ -190,7 +190,7 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
             return
         }
         
-        DispatchQueue.global(qos: .default).async(execute: {
+        DispatchQueue.global(qos: .default).async {
 
             guard let videoConnection = imageOutput.connection(with: AVMediaType.video) else { return }
 
@@ -219,7 +219,7 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
                 videoConnection.videoOrientation = .portrait
             }
 
-            imageOutput.captureStillImageAsynchronously(from: videoConnection) { (buffer, error) -> Void in
+            imageOutput.captureStillImageAsynchronously(from: videoConnection) { buffer, error in
                 
                 self.stopCamera()
                 
@@ -259,14 +259,12 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
                     return
                 }
                 
-                DispatchQueue.main.async(execute: { () -> Void in
-                    
+                DispatchQueue.main.async {
                     let image = fusumaCropImage ? UIImage(cgImage: imageRef, scale: sw/iw, orientation: image.imageOrientation) : image
                     
                     delegate.cameraShotFinished(image)
                     
                     if fusumaSavesImage {
-                        
                         self.saveImageToCameraRoll(image: image)
                     }
                     
@@ -274,9 +272,9 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
                     self.device        = nil
                     self.imageOutput   = nil
                     self.motionManager = nil
-                })
+                }
             }
-        })
+        }
     }
     
     @IBAction func flipButtonPressed(_ sender: UIButton) {
