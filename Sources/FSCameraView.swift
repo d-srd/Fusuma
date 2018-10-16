@@ -190,9 +190,9 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
             return
         }
         
-        DispatchQueue.global(qos: .default).async(execute: { () -> Void in
+        DispatchQueue.global(qos: .default).async(execute: {
 
-            let videoConnection = imageOutput.connection(with: AVMediaType.video)
+            guard let videoConnection = imageOutput.connection(with: AVMediaType.video) else { return }
 
             let orientation = self.currentDeviceOrientation ?? UIDevice.current.orientation
             
@@ -200,35 +200,34 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
             
             case .portrait:
             
-                videoConnection?.videoOrientation = .portrait
+                videoConnection.videoOrientation = .portrait
             
             case .portraitUpsideDown:
             
-                videoConnection?.videoOrientation = .portraitUpsideDown
+                videoConnection.videoOrientation = .portraitUpsideDown
             
             case .landscapeRight:
             
-                videoConnection?.videoOrientation = .landscapeLeft
+                videoConnection.videoOrientation = .landscapeLeft
             
             case .landscapeLeft:
             
-                videoConnection?.videoOrientation = .landscapeRight
+                videoConnection.videoOrientation = .landscapeRight
             
             default:
             
-                videoConnection?.videoOrientation = .portrait
+                videoConnection.videoOrientation = .portrait
             }
 
-            imageOutput.captureStillImageAsynchronously(from: videoConnection!) { (buffer, error) -> Void in
+            imageOutput.captureStillImageAsynchronously(from: videoConnection) { (buffer, error) -> Void in
                 
                 self.stopCamera()
                 
-                guard let data = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer!),
-                    let image = UIImage(data: data),
-                    let delegate = self.delegate else {
-                        
-                        return
-                }
+                guard let buffer = buffer,
+                      let data = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer),
+                      let image = UIImage(data: data),
+                      let delegate = self.delegate
+                else { return }
                 
                 // Image size
                 let iw: CGFloat
