@@ -117,7 +117,7 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
         
         self.startCamera()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(FSCameraView.willEnterForegroundNotification(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(FSCameraView.willEnterForegroundNotification(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     
     @objc func willEnterForegroundNotification(_ notification: Notification) {
@@ -283,12 +283,12 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
             case .off:
                 
                 device.flashMode = AVCaptureDevice.FlashMode.on
-                flashButton.setImage(flashOnImage?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+                flashButton.setImage(flashOnImage?.withRenderingMode(.alwaysTemplate), for: UIControl.State())
                 
             case .on:
                 
                 device.flashMode = AVCaptureDevice.FlashMode.off
-                flashButton.setImage(flashOffImage?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+                flashButton.setImage(flashOffImage?.withRenderingMode(.alwaysTemplate), for: UIControl.State())
                 
             default:
                 
@@ -299,7 +299,7 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
 
         } catch _ {
 
-            flashButton.setImage(flashOffImage?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+            flashButton.setImage(flashOffImage?.withRenderingMode(.alwaysTemplate), for: UIControl.State())
             
             return
         }
@@ -366,7 +366,7 @@ fileprivate extension FSCameraView {
                        delay: 0.0,
                        usingSpringWithDamping: 0.8,
                        initialSpringVelocity: 3.0,
-                       options: UIViewAnimationOptions.curveEaseIn,
+                       options: UIView.AnimationOptions.curveEaseIn,
                        animations: {
             
                 focusView.alpha = 1.0
@@ -390,7 +390,7 @@ fileprivate extension FSCameraView {
                 try device.lockForConfiguration()
                 
                 device.flashMode = AVCaptureDevice.FlashMode.off
-                flashButton.setImage(flashOffImage?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+                flashButton.setImage(flashOffImage?.withRenderingMode(.alwaysTemplate), for: UIControl.State())
                 
                 device.unlockForConfiguration()
                 
